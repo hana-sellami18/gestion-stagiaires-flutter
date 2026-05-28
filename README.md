@@ -1,7 +1,7 @@
 # gestion_stagiaires_app
 
 A new Flutter project.
-
+Test CI/CD mobile - pipeline Jenkins automatique.
 ## Getting Started
 
 This project is a starting point for a Flutter application.

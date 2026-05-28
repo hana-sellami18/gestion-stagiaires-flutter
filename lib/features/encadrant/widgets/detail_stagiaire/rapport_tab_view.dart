@@ -100,13 +100,11 @@ class _RapportAbsent extends StatelessWidget {
         GestureDetector(
           onTap: onRetry,
           child: Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 24, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             decoration: BoxDecoration(
               color: AppTheme.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(AppTheme.radiusMD),
-              border: Border.all(
-                  color: AppTheme.primary.withOpacity(0.3)),
+              border: Border.all(color: AppTheme.primary.withOpacity(0.3)),
             ),
             child: const Text('Actualiser',
                 style: TextStyle(
@@ -131,26 +129,22 @@ class _RapportDisponible extends StatefulWidget {
 }
 
 class _RapportDisponibleState extends State<_RapportDisponible> {
-  // ✅ Mets ton IP réelle ici
-  static const String _baseUrl = 'http://192.168.1.135:8085/api';
+  static const String _baseUrl = 'https://unfrail-nonmeasurably-terica.ngrok-free.dev/api';
   bool _downloading = false;
 
-  Future<void> _ouvrirFichier(String fichierPath,
-      {bool telecharger = false}) async {
+  Future<void> _ouvrirFichier(String fichierPath, {bool telecharger = false}) async {
     final nomFichier = fichierPath.split('/').last;
     final url = '$_baseUrl/rapports/fichier/$nomFichier';
 
     setState(() => _downloading = true);
 
     try {
-      // ✅ Afficher loading
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(children: const [
             SizedBox(
               width: 16, height: 16,
-              child: CircularProgressIndicator(
-                  color: Colors.white, strokeWidth: 2),
+              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
             ),
             SizedBox(width: 12),
             Text('Chargement du fichier...'),
@@ -160,7 +154,6 @@ class _RapportDisponibleState extends State<_RapportDisponible> {
         ));
       }
 
-      // ✅ Télécharger dans le dossier temporaire
       final dir = await getTemporaryDirectory();
       final filePath = '${dir.path}/$nomFichier';
 
@@ -170,7 +163,6 @@ class _RapportDisponibleState extends State<_RapportDisponible> {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
       }
 
-      // ✅ Ouvrir le fichier avec l'app native
       final result = await OpenFile.open(filePath);
 
       if (result.type != ResultType.done && mounted) {
@@ -234,8 +226,7 @@ class _RapportDisponibleState extends State<_RapportDisponible> {
             if (dateDepot != null) ...[
               const SizedBox(height: 10),
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppTheme.successSoft,
                   borderRadius: BorderRadius.circular(20),
@@ -269,7 +260,6 @@ class _RapportDisponibleState extends State<_RapportDisponible> {
 
             const SizedBox(height: 16),
 
-            // ✅ Boutons
             Row(children: [
               Expanded(
                 child: GestureDetector(
@@ -279,34 +269,30 @@ class _RapportDisponibleState extends State<_RapportDisponible> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 13),
                     decoration: BoxDecoration(
-                      color: fichierPath != null
-                          ? AppTheme.primary
-                          : AppTheme.border,
-                      borderRadius:
-                      BorderRadius.circular(AppTheme.radiusMD),
+                      color: fichierPath != null ? AppTheme.primary : AppTheme.border,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMD),
                     ),
                     child: _downloading
                         ? const Center(
-                      child: SizedBox(
-                        width: 18, height: 18,
-                        child: CircularProgressIndicator(
-                            color: Colors.white, strokeWidth: 2),
-                      ),
-                    )
+                            child: SizedBox(
+                              width: 18, height: 18,
+                              child: CircularProgressIndicator(
+                                  color: Colors.white, strokeWidth: 2),
+                            ),
+                          )
                         : const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.visibility_rounded,
-                            color: Colors.white, size: 16),
-                        SizedBox(width: 8),
-                        Text('Consulter',
-                            style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white)),
-                      ],
-                    ),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.visibility_rounded, color: Colors.white, size: 16),
+                              SizedBox(width: 8),
+                              Text('Consulter',
+                                  style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white)),
+                            ],
+                          ),
                   ),
                 ),
               ),
@@ -319,17 +305,13 @@ class _RapportDisponibleState extends State<_RapportDisponible> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 13),
                     decoration: BoxDecoration(
-                      color: fichierPath != null
-                          ? AppTheme.dark
-                          : AppTheme.border,
-                      borderRadius:
-                      BorderRadius.circular(AppTheme.radiusMD),
+                      color: fichierPath != null ? AppTheme.dark : AppTheme.border,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMD),
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.download_rounded,
-                            color: Colors.white, size: 16),
+                        Icon(Icons.download_rounded, color: Colors.white, size: 16),
                         SizedBox(width: 8),
                         Text('Télécharger',
                             style: TextStyle(

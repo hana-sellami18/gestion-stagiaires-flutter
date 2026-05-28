@@ -1,7 +1,9 @@
 class ApiEndpoints {
   // Base
-  static const String baseUrl = "https://unfrail-nonmeasurably-terica.ngrok-free.dev/api";
-  // Auth
+  static const String baseUrl = String.fromEnvironment(
+    'BASE_URL',
+    defaultValue: 'https://unfrail-nonmeasurably-terica.ngrok-free.dev/api',
+  );  // Auth
   static const String login    = "/auth/login";
   static const String register = "/auth/register";
   static const String demandesAcces = "/demandes-acces";

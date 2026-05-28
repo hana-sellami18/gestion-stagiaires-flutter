@@ -1,7 +1,6 @@
 class ApiEndpoints {
   // Base
-  static const String baseUrl = "http://192.168.56.103:8089/api"; // ✅ Corrigé
-
+  static const String baseUrl = "https://unfrail-nonmeasurably-terica.ngrok-free.dev/api";
   // Auth
   static const String login    = "/auth/login";
   static const String register = "/auth/register";

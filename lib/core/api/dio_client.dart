@@ -8,12 +8,14 @@ class DioClient {
   DioClient() {
     dio = Dio(
       BaseOptions(
-        baseUrl: ApiEndpoints.baseUrl, // Utilise http://10.0.2.2:8085/api
+        baseUrl: ApiEndpoints.baseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 120),
-
         contentType: 'application/json',
         responseType: ResponseType.json,
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
       ),
     );
 

@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         FLUTTER = 'C:\\flutter\\bin\\flutter.bat'
-        // Identifiants Firebase App Distribution
+        FIREBASE = 'C:\\Users\\ousse\\AppData\\Roaming\\npm\\firebase.cmd'
         FIREBASE_APP_ID = '1:961979269271:android:271c1823366a57f23829d2'
         GOOGLE_APPLICATION_CREDENTIALS = 'C:\\firebase\\firebase-key.json'
     }
@@ -44,8 +44,7 @@ pipeline {
 
         stage('Distribute to Firebase') {
             steps {
-                // Envoie l'APK aux testeurs via Firebase App Distribution
-                bat """firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk ^
+                bat """\"%FIREBASE%\" appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk ^
                     --app %FIREBASE_APP_ID% ^
                     --release-notes \"Build automatique depuis Jenkins\" ^
                     --testers \"hanasellami18@gmail.com\""""

@@ -47,8 +47,7 @@ pipeline {
                 bat """\"%FIREBASE%\" appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk ^
                     --app %FIREBASE_APP_ID% ^
                     --release-notes \"Build automatique depuis Jenkins\" ^
-                    --testers \"hanasellami18@gmail.com\""""
-            }
+--testers \"hanasellami18@gmail.com,sabehchaari12@gmail.com\""""            }
         }
     }
 

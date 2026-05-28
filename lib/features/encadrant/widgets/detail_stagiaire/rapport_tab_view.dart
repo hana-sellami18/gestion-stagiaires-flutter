@@ -131,21 +131,24 @@ class _RapportDisponible extends StatefulWidget {
 class _RapportDisponibleState extends State<_RapportDisponible> {
   static const String _baseUrl = 'https://unfrail-nonmeasurably-terica.ngrok-free.dev/api';
   bool _downloading = false;
+  bool _telecharging = false;
 
   Future<void> _ouvrirFichier(String fichierPath, {bool telecharger = false}) async {
     final nomFichier = fichierPath.split('/').last;
     final url = '$_baseUrl/rapports/fichier/$nomFichier';
 
-    setState(() => _downloading = true);
+    if (telecharger) {
+      setState(() => _telecharging = true);
+    } else {
+      setState(() => _downloading = true);
+    }
 
     try {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(children: const [
-            SizedBox(
-              width: 16, height: 16,
-              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-            ),
+            SizedBox(width: 16, height: 16,
+                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)),
             SizedBox(width: 12),
             Text('Chargement du fichier...'),
           ]),
@@ -154,23 +157,36 @@ class _RapportDisponibleState extends State<_RapportDisponible> {
         ));
       }
 
-      final dir = await getTemporaryDirectory();
-      final filePath = '${dir.path}/$nomFichier';
-
-      await DioClient().dio.download(url, filePath);
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      Directory? dir;
+      if (telecharger) {
+        dir = Directory('/storage/emulated/0/Download');
+        if (!await dir.exists()) dir = await getTemporaryDirectory();
+      } else {
+        dir = await getTemporaryDirectory();
       }
 
-      final result = await OpenFile.open(filePath);
+      final filePath = '${dir.path}/$nomFichier';
+      await DioClient().dio.download(url, filePath);
 
-      if (result.type != ResultType.done && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Impossible d\'ouvrir : ${result.message}'),
-          backgroundColor: AppTheme.error,
-          behavior: SnackBarBehavior.floating,
-        ));
+      if (mounted) ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      if (telecharger) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Fichier téléchargé : $nomFichier'),
+            backgroundColor: AppTheme.success,
+            behavior: SnackBarBehavior.floating,
+          ));
+        }
+      } else {
+        final result = await OpenFile.open(filePath);
+        if (result.type != ResultType.done && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Impossible d\'ouvrir : ${result.message}'),
+            backgroundColor: AppTheme.error,
+            behavior: SnackBarBehavior.floating,
+          ));
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -182,7 +198,10 @@ class _RapportDisponibleState extends State<_RapportDisponible> {
         ));
       }
     } finally {
-      if (mounted) setState(() => _downloading = false);
+      if (mounted) setState(() {
+        _downloading = false;
+        _telecharging = false;
+      });
     }
   }
 
@@ -274,32 +293,32 @@ class _RapportDisponibleState extends State<_RapportDisponible> {
                     ),
                     child: _downloading
                         ? const Center(
-                            child: SizedBox(
-                              width: 18, height: 18,
-                              child: CircularProgressIndicator(
-                                  color: Colors.white, strokeWidth: 2),
-                            ),
-                          )
+                      child: SizedBox(
+                        width: 18, height: 18,
+                        child: CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 2),
+                      ),
+                    )
                         : const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.visibility_rounded, color: Colors.white, size: 16),
-                              SizedBox(width: 8),
-                              Text('Consulter',
-                                  style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white)),
-                            ],
-                          ),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.visibility_rounded, color: Colors.white, size: 16),
+                        SizedBox(width: 8),
+                        Text('Consulter',
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white)),
+                      ],
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: GestureDetector(
-                  onTap: (!_downloading && fichierPath != null)
+                  onTap: (!_telecharging && fichierPath != null)
                       ? () => _ouvrirFichier(fichierPath, telecharger: true)
                       : null,
                   child: Container(
@@ -308,7 +327,15 @@ class _RapportDisponibleState extends State<_RapportDisponible> {
                       color: fichierPath != null ? AppTheme.dark : AppTheme.border,
                       borderRadius: BorderRadius.circular(AppTheme.radiusMD),
                     ),
-                    child: const Row(
+                    child: _telecharging
+                        ? const Center(
+                      child: SizedBox(
+                        width: 18, height: 18,
+                        child: CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 2),
+                      ),
+                    )
+                        : const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.download_rounded, color: Colors.white, size: 16),

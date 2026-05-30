@@ -20,15 +20,15 @@ class DashboardHeader extends StatelessWidget {
   });
 
   String get _initials {
-    final parts = dossier.utilisateur.nomComplet.trim().split(' ');
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    final nom    = dossier.utilisateur.nom.trim();
+    final prenom = dossier.utilisateur.prenom.trim();
+    if (nom.isNotEmpty && prenom.isNotEmpty) {
+      return '${nom[0]}${prenom[0]}'.toUpperCase();
     }
-    return dossier.utilisateur.nomComplet.substring(0, 2).toUpperCase();
+    return nom.isNotEmpty ? nom.substring(0, 2).toUpperCase() : '??';
   }
 
-  String get _prenom =>
-      dossier.utilisateur.nomComplet.trim().split(' ').first;
+  String get _prenom => dossier.utilisateur.nom.trim();
 
   @override
   Widget build(BuildContext context) {
